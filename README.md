@@ -31,8 +31,9 @@ See [docs/vfs-flow.md](/Users/shahrukh/Documents/ChatGPT/Private%20stuff/docs/vf
 7. Run manual check: `python -m vfs_monitor.cli check`
 8. Run manual check with notifications: `python -m vfs_monitor.cli check --notify`
 9. Trigger GitHub workflow manually with `workflow_dispatch`
-10. Verify Telegram and email delivery
-11. Leave schedule enabled once behavior is validated
+10. Verify Telegram delivery
+11. Optionally verify email delivery if Gmail secrets are configured
+12. Leave schedule enabled once behavior is validated
 
 ## Local commands
 
@@ -48,7 +49,7 @@ python -m vfs_monitor.cli check --persist-state
 - `AUTH_REQUIRED`: appointment visibility requires manual login
 - `UNKNOWN`: page changed and detector can no longer classify safely
 - Telegram failed: verify `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`
-- Gmail failed: verify `GMAIL_ADDRESS`, `GMAIL_APP_PASSWORD`, and `ALERT_EMAIL_TO`
+- Gmail failed: verify `GMAIL_ADDRESS`, `GMAIL_APP_PASSWORD`, and `ALERT_EMAIL_TO`, or leave them unset to run Telegram-only
 - Workflow stopped: confirm repository still has recent activity and scheduled workflows remain enabled
 
 ## Security

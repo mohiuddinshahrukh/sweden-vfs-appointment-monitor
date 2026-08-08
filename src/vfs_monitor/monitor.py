@@ -67,14 +67,21 @@ def run_monitor(
 
     if should_send:
         body = format_notification_message(detection, decision.event_type)
-        send_telegram_message(settings, body)
-        send_email_message(
-            settings,
-            subject="URGENT: Sweden VFS appointment availability detected"
-            if detection.status.value == "available"
-            else "VFS monitor notice",
-            text=body,
-        )
+        sent_any = False
+        if settings.telegram_bot_token and settings.telegram_chat_id:
+            send_telegram_message(settings, body)
+            sent_any = True
+        if settings.gmail_address and settings.gmail_app_password and settings.alert_email_to:
+            send_email_message(
+                settings,
+                subject="URGENT: Sweden VFS appointment availability detected"
+                if detection.status.value == "available"
+                else "VFS monitor notice",
+                text=body,
+            )
+            sent_any = True
+        if not sent_any:
+            should_send = False
 
     new_state = next_state(
         previous,
@@ -94,4 +101,3 @@ def run_monitor(
         decision_reason=decision.reason,
         event_type=decision.event_type,
     )
-
