@@ -1,0 +1,2 @@
+"""Sweden VFS appointment monitor."""
+

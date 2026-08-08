@@ -1,0 +1,97 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from vfs_monitor.browser import detect_with_playwright
+from vfs_monitor.config import Settings
+from vfs_monitor.detector import detect_from_http
+from vfs_monitor.http_client import fetch_booking_page
+from vfs_monitor.models import DetectionResult
+from vfs_monitor.notifications import (
+    format_notification_message,
+    send_email_message,
+    send_telegram_message,
+)
+from vfs_monitor.state import (
+    build_alert_fingerprint,
+    decide_transition,
+    load_state,
+    next_state,
+    save_state,
+    update_heartbeat,
+    utc_now_iso,
+)
+
+
+@dataclass(slots=True)
+class MonitorRunResult:
+    detection: DetectionResult
+    notification_sent: bool
+    heartbeat_updated: bool
+    decision_reason: str
+    event_type: str
+
+
+def perform_check(settings: Settings) -> DetectionResult:
+    checked_at = utc_now_iso()
+    fetch_result = fetch_booking_page(settings.booking_url)
+    detection = detect_from_http(
+        fetch_result,
+        location=settings.location,
+        category=settings.category,
+        checked_at=checked_at,
+        source_url=settings.booking_url,
+    )
+    if settings.use_playwright and detection.status.value == "unknown":
+        return detect_with_playwright(
+            booking_url=settings.booking_url,
+            location=settings.location,
+            category=settings.category,
+            checked_at=checked_at,
+        )
+    return detection
+
+
+def run_monitor(
+    settings: Settings,
+    *,
+    notify: bool,
+    persist_state: bool,
+    update_daily_heartbeat: bool,
+) -> MonitorRunResult:
+    previous = load_state(settings.state_file)
+    detection = perform_check(settings)
+    decision = decide_transition(previous, detection)
+    alert_fingerprint = build_alert_fingerprint(detection, decision.event_type)
+    should_send = notify and decision.send_notification and previous.last_alert_fingerprint != alert_fingerprint
+
+    if should_send:
+        body = format_notification_message(detection, decision.event_type)
+        send_telegram_message(settings, body)
+        send_email_message(
+            settings,
+            subject="URGENT: Sweden VFS appointment availability detected"
+            if detection.status.value == "available"
+            else "VFS monitor notice",
+            text=body,
+        )
+
+    new_state = next_state(
+        previous,
+        detection,
+        alert_fingerprint if should_send else None,
+    )
+    heartbeat_updated = False
+    if persist_state:
+        save_state(settings.state_file, new_state)
+        if update_daily_heartbeat:
+            heartbeat_updated = update_heartbeat(settings.heartbeat_file, detection.checked_at)
+
+    return MonitorRunResult(
+        detection=detection,
+        notification_sent=should_send,
+        heartbeat_updated=heartbeat_updated,
+        decision_reason=decision.reason,
+        event_type=decision.event_type,
+    )
+

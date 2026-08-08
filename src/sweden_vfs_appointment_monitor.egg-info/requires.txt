@@ -1,0 +1,8 @@
+beautifulsoup4<5,>=4.13
+httpx<1,>=0.28
+
+[browser]
+playwright<2,>=1.54
+
+[dev]
+pytest<9,>=8.3
