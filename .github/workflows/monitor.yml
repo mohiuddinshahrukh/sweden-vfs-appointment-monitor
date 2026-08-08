@@ -38,7 +38,7 @@ jobs:
           VFS_BOOKING_URL: ${{ vars.VFS_BOOKING_URL || 'https://visa.vfsglobal.com/pak/en/swe/book-an-appointment' }}
           VFS_COUNTRY: ${{ vars.VFS_COUNTRY || 'Sweden' }}
           VFS_LOCATION: ${{ vars.VFS_LOCATION || 'Islamabad' }}
-          VFS_CATEGORY: ${{ vars.VFS_CATEGORY }}
+          VFS_CATEGORY: ${{ vars.VFS_CATEGORY || 'Tourist / Visit Family Or Friends' }}
           VFS_USE_PLAYWRIGHT: "false"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

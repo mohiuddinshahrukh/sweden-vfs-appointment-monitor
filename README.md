@@ -27,7 +27,7 @@ See [docs/vfs-flow.md](/Users/shahrukh/Documents/ChatGPT/Private%20stuff/docs/vf
 3. Install package and dev dependencies: `pip install -e .[dev]`
 4. Run tests: `pytest`
 5. Copy `.env.example` values into GitHub Actions secrets or local shell env.
-6. Set `VFS_CATEGORY` only after you confirm the exact VFS label from a legitimate visible flow. Leave it blank otherwise.
+6. Default provisional category is `Tourist / Visit Family Or Friends`, based on current official public VFS Sweden Pakistan pages for short-stay travel. Update it if the live appointment selector shows a different exact label.
 7. Run manual check: `python -m vfs_monitor.cli check`
 8. Run manual check with notifications: `python -m vfs_monitor.cli check --notify`
 9. Trigger GitHub workflow manually with `workflow_dispatch`

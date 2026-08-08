@@ -60,6 +60,14 @@ The following items remain unconfirmed from this environment because the public 
 5. exact text or structure for positive availability state
 6. whether actual date/time data is exposed in HTML or JSON after legitimate navigation
 
+## Provisional category choice
+
+For a planned stay of up to 90 days, current official public VFS Sweden Pakistan pages show the label:
+
+- `Tourist / Visit Family Or Friends`
+
+That is the best provisional `VFS_CATEGORY` value for this repository until the live appointment selector can be inspected directly without bypassing protections.
+
 ## Current implementation decision
 
 Given the observed `403` protection, repository implementation uses:
@@ -71,4 +79,3 @@ Given the observed `403` protection, repository implementation uses:
 ## Operational consequence
 
 As of 2026-08-08, a reliable unattended five-minute slot checker may not be technically possible from GitHub Actions without defeating site protections. This project therefore implements best-effort legitimate monitoring and warns clearly when the system is blocked or changed.
-
