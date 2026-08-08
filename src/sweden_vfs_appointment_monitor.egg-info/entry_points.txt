@@ -1,2 +1,0 @@
-[console_scripts]
-vfs-monitor = vfs_monitor.cli:main
