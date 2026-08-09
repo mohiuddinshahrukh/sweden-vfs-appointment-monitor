@@ -9,6 +9,7 @@ def test_notification_contains_dates_when_present() -> None:
         status=AppointmentStatus.AVAILABLE,
         location="Islamabad",
         category="Visit Family/Friends",
+        subcategory="Family Visit",
         available_dates=["2026-08-21"],
         available_times=["09:30"],
         signals=["selectable appointment date found"],
@@ -21,4 +22,5 @@ def test_notification_contains_dates_when_present() -> None:
     assert "2026-08-21" in message
     assert "09:30" in message
     assert "Islamabad" in message
+    assert "Family Visit" in message
 

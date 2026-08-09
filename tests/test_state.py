@@ -14,6 +14,7 @@ def make_result(
         status=status,
         location="Islamabad",
         category="Visit Family/Friends",
+        subcategory="Family Visit",
         available_dates=dates or [],
         available_times=[],
         signals=[],

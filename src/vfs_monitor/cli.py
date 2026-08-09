@@ -16,16 +16,34 @@ def build_parser() -> argparse.ArgumentParser:
     check.add_argument("--persist-state", action="store_true")
     check.add_argument("--heartbeat", action="store_true")
     check.add_argument("--json", action="store_true")
+    open_browser = subparsers.add_parser("open-browser")
+    open_browser.add_argument(
+        "--headed",
+        action="store_true",
+        help="force a visible browser window even if VFS_BROWSER_HEADLESS=true",
+    )
     return parser
 
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    settings = load_settings()
+    if args.command == "open-browser":
+        from vfs_monitor.browser import open_persistent_browser_for_manual_login
+
+        open_persistent_browser_for_manual_login(
+            booking_url=settings.booking_url,
+            browser_user_data_dir=settings.browser_user_data_dir,
+            browser_channel=settings.browser_channel,
+            browser_executable_path=settings.browser_executable_path,
+            timeout_ms=settings.browser_timeout_ms,
+            headless=False if args.headed else settings.browser_headless,
+        )
+        return 0
     if args.command != "check":
         parser.error("unsupported command")
 
-    settings = load_settings()
     result = run_monitor(
         settings,
         notify=args.notify,
@@ -53,6 +71,7 @@ def main() -> int:
 
     print(f"Centre: {detection.location}")
     print(f"Category: {detection.category or 'unknown'}")
+    print(f"Sub-category: {detection.subcategory or 'unknown'}")
     print(f"Status: {detection.status.value.upper()}")
     print(f"Available dates: {', '.join(detection.available_dates) if detection.available_dates else 'none'}")
     print(f"Available times: {', '.join(detection.available_times) if detection.available_times else 'none'}")

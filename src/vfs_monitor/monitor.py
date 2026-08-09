@@ -34,20 +34,40 @@ class MonitorRunResult:
 
 def perform_check(settings: Settings) -> DetectionResult:
     checked_at = utc_now_iso()
+    if settings.check_method == "browser":
+        return detect_with_playwright(
+            booking_url=settings.booking_url,
+            location=settings.location,
+            category=settings.category,
+            subcategory=settings.subcategory,
+            checked_at=checked_at,
+            browser_user_data_dir=settings.browser_user_data_dir,
+            browser_channel=settings.browser_channel,
+            browser_executable_path=settings.browser_executable_path,
+            browser_headless=settings.browser_headless,
+            browser_timeout_ms=settings.browser_timeout_ms,
+        )
     fetch_result = fetch_booking_page(settings.booking_url)
     detection = detect_from_http(
         fetch_result,
         location=settings.location,
         category=settings.category,
+        subcategory=settings.subcategory,
         checked_at=checked_at,
         source_url=settings.booking_url,
     )
-    if settings.use_playwright and detection.status.value == "unknown":
+    if settings.check_method == "auto" and detection.status.value in {"unknown", "blocked"}:
         return detect_with_playwright(
             booking_url=settings.booking_url,
             location=settings.location,
             category=settings.category,
+            subcategory=settings.subcategory,
             checked_at=checked_at,
+            browser_user_data_dir=settings.browser_user_data_dir,
+            browser_channel=settings.browser_channel,
+            browser_executable_path=settings.browser_executable_path,
+            browser_headless=settings.browser_headless,
+            browser_timeout_ms=settings.browser_timeout_ms,
         )
     return detection
 

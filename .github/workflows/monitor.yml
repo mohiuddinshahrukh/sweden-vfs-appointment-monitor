@@ -1,19 +1,14 @@
-name: Monitor Sweden VFS
+name: CI
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
+  push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
 
-concurrency:
-  group: vfs-monitor
-  cancel-in-progress: true
-
-permissions:
-  contents: write
-
 jobs:
-  monitor:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -31,35 +26,3 @@ jobs:
 
       - name: Run tests
         run: pytest
-
-      - name: Run monitor
-        env:
-          DEBUG: "false"
-          VFS_BOOKING_URL: ${{ vars.VFS_BOOKING_URL || 'https://visa.vfsglobal.com/pak/en/swe/book-an-appointment' }}
-          VFS_COUNTRY: ${{ vars.VFS_COUNTRY || 'Sweden' }}
-          VFS_LOCATION: ${{ vars.VFS_LOCATION || 'Islamabad' }}
-          VFS_CATEGORY: ${{ vars.VFS_CATEGORY || 'Tourist / Visit Family Or Friends' }}
-          VFS_USE_PLAYWRIGHT: "false"
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
-          VFS_EMAIL: ${{ secrets.VFS_EMAIL }}
-          VFS_PASSWORD: ${{ secrets.VFS_PASSWORD }}
-        run: python -m vfs_monitor.cli check --notify --persist-state --heartbeat --json
-
-      - name: Commit state
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if ! git diff --quiet -- state/status.json state/heartbeat.txt; then
-            if git diff --quiet -- state/status.json; then
-              git add state/heartbeat.txt
-              git commit -m "chore: monitor heartbeat [skip ci]"
-            else
-              git add state/status.json state/heartbeat.txt
-              git commit -m "chore: update monitor state [skip ci]"
-            fi
-            git push
-          fi

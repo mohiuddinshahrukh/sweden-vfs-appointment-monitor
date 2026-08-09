@@ -1,6 +1,6 @@
 # VFS Flow Discovery
 
-Date of discovery: 2026-08-08
+Date of discovery: 2026-08-09
 
 Target:
 
@@ -49,32 +49,33 @@ VFS login pages on the same platform expose a JavaScript-heavy sign-in flow and 
 
 That indicates the platform uses client-side rendering for at least part of the booking flow.
 
+## Confirmed from user-validated screenshots
+
+- exact application centre label:
+  `Sweden Visa Application Centre - Islamabad`
+- exact appointment category label:
+  `Default_Sweden_Pakistan`
+- exact appointment sub-category label:
+  `Family Visit`
+- exact unavailable message:
+  `We are sorry but no appointment slots are currently available. New slots open at regular intervals, please try again later`
+
 ## What is still unconfirmed
 
-The following items remain unconfirmed from this environment because the public entry is blocked before the appointment UI becomes visible:
+The following items still require direct validation from a legitimate local browser session on the Windows laptop:
 
-1. exact `Book now` click path for Pakistan -> Sweden
-2. whether login is required before location/category selectors
-3. exact Islamabad category label for short-stay family/friends visit
-4. exact text for no-availability state
-5. exact text or structure for positive availability state
-6. whether actual date/time data is exposed in HTML or JSON after legitimate navigation
-
-## Provisional category choice
-
-For a planned stay of up to 90 days, current official public VFS Sweden Pakistan pages show the label:
-
-- `Tourist / Visit Family Or Friends`
-
-That is the best provisional `VFS_CATEGORY` value for this repository until the live appointment selector can be inspected directly without bypassing protections.
+1. exact positive availability DOM/text structure when a date becomes bookable
+2. whether date/time values appear as visible text, button labels, or hidden JSON
+3. whether session expiry lands on login, OTP, or another intermediate challenge first
 
 ## Current implementation decision
 
-Given the observed `403` protection, repository implementation uses:
+Given the observed `403` protection and the confirmed manual-browser success, repository implementation now uses:
 
-- HTTP-first probing
-- explicit `BLOCKED` classification on Cloudflare/access-denied signals
-- optional Playwright fallback only if a legitimate browser-visible public path can be used without bypassing CAPTCHA/OTP/security challenges
+- Windows-local browser-first probing via Playwright persistent context
+- a dedicated reusable local Chrome profile
+- exact unavailable-text detection
+- explicit `AUTH_REQUIRED` and `BLOCKED` classification without bypass attempts
 
 ## Operational consequence
 

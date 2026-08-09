@@ -18,6 +18,7 @@ class DetectionResult:
     status: AppointmentStatus
     location: str
     category: str | None
+    subcategory: str | None
     available_dates: list[str]
     available_times: list[str]
     signals: list[str]

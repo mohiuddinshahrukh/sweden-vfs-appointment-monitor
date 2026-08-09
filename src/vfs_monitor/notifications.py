@@ -17,6 +17,7 @@ def format_notification_message(result: DetectionResult, event_type: str) -> str
         f"Status: {result.status.value.upper()}",
         f"Centre: {result.location}",
         f"Category: {result.category or 'unknown'}",
+        f"Sub-category: {result.subcategory or 'unknown'}",
         f"Method: {result.method}",
         f"Checked: {result.checked_at}",
         f"Booking URL: {result.source_url}",
