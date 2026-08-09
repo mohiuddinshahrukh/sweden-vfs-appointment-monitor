@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 
 from vfs_monitor.detector import classify_visible_text
 from vfs_monitor.models import AppointmentStatus, DetectionResult
@@ -73,6 +74,16 @@ def _build_browser_detection(
         current_url=current_url,
         extra_signals=signals,
     )
+
+
+def _login_url_from_booking_url(booking_url: str) -> str:
+    parts = urlsplit(booking_url)
+    path = parts.path.rstrip("/")
+    if path.endswith("/book-an-appointment"):
+        path = path[: -len("/book-an-appointment")] + "/login"
+    else:
+        path = "/login"
+    return urlunsplit((parts.scheme, parts.netloc, path, "", ""))
 
 
 def _launch_persistent_context(
@@ -249,13 +260,15 @@ def detect_with_attached_browser(
                 )
             page.bring_to_front()
             signals = ["attached_to_existing_chrome_tab"]
-            page.reload(wait_until="domcontentloaded", timeout=browser_timeout_ms)
-            signals.append("refreshed_existing_tab")
-            try:
-                page.wait_for_load_state("networkidle", timeout=min(browser_timeout_ms, 15000))
-            except playwright_timeout_error:
-                pass
-            page.wait_for_timeout(3000)
+            login_url = _login_url_from_booking_url(booking_url)
+            if "/login" not in page.url:
+                page.goto(login_url, wait_until="domcontentloaded", timeout=browser_timeout_ms)
+                signals.append("navigated_to_login")
+                try:
+                    page.wait_for_load_state("networkidle", timeout=min(browser_timeout_ms, 15000))
+                except playwright_timeout_error:
+                    pass
+                page.wait_for_timeout(3000)
 
             if "/login" in page.url:
                 signals.append("login_page_found")
