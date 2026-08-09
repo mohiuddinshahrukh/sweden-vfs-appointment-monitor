@@ -31,6 +31,32 @@ Default profile directory:
 
 - `browser-profile`
 
+If reusing real Chrome user data root, set:
+
+- `VFS_BROWSER_USER_DATA_DIR=%LOCALAPPDATA%\Google\Chrome\User Data`
+- `VFS_BROWSER_PROFILE_DIRECTORY=Default`
+
+## Attach mode
+
+If VFS allows your manually opened Chrome tab but blocks automation-launched tabs, use attach mode instead of persistent-context launch.
+
+Steps:
+
+1. Close Chrome fully.
+2. Start debug-enabled Chrome:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\open-debug-chrome.ps1
+```
+
+3. Log in manually and navigate to appointment page.
+4. Set:
+   - `VFS_CHECK_METHOD=attach`
+   - `VFS_BROWSER_ATTACH_URL=http://127.0.0.1:9222`
+5. Run monitor check.
+
+This mode attaches to existing Chrome tab and refreshes that tab instead of launching a new browser window.
+
 ## First-time setup
 
 1. Create `.env` from `.env.example`.
@@ -38,7 +64,7 @@ Default profile directory:
 3. Install dependencies:
 
 ```powershell
-py -3.13 -m venv .venv
+py -3.11 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -e .[dev,browser]
@@ -56,7 +82,7 @@ python -m vfs_monitor.cli open-browser --headed
 7. Confirm the page shows:
    - `Sweden Visa Application Centre - Islamabad`
    - `Default_Sweden_Pakistan`
-   - `Family Visit`
+   - `Tourist Visit`
 8. Stop the helper once the session is ready by pressing `Ctrl+C`.
 
 ## First validation run

@@ -31,6 +31,8 @@ class Settings:
     state_file: str
     heartbeat_file: str
     browser_user_data_dir: str
+    browser_profile_directory: str | None
+    browser_attach_url: str | None
     browser_channel: str | None
     browser_executable_path: str | None
     browser_headless: bool
@@ -48,7 +50,7 @@ def load_settings() -> Settings:
         country=os.getenv("VFS_COUNTRY", "Sweden"),
         location=os.getenv("VFS_LOCATION", "Sweden Visa Application Centre - Islamabad"),
         category=os.getenv("VFS_CATEGORY", "Default_Sweden_Pakistan"),
-        subcategory=os.getenv("VFS_SUBCATEGORY", "Family Visit"),
+        subcategory=os.getenv("VFS_SUBCATEGORY", "Tourist Visit"),
         debug=_as_bool(os.getenv("DEBUG"), default=False),
         vfs_email=os.getenv("VFS_EMAIL"),
         vfs_password=os.getenv("VFS_PASSWORD"),
@@ -60,6 +62,8 @@ def load_settings() -> Settings:
         state_file=os.getenv("VFS_STATE_FILE", "state/status.json"),
         heartbeat_file=os.getenv("VFS_HEARTBEAT_FILE", "state/heartbeat.txt"),
         browser_user_data_dir=os.getenv("VFS_BROWSER_USER_DATA_DIR", "browser-profile"),
+        browser_profile_directory=os.getenv("VFS_BROWSER_PROFILE_DIRECTORY"),
+        browser_attach_url=os.getenv("VFS_BROWSER_ATTACH_URL", "http://127.0.0.1:9222"),
         browser_channel=os.getenv("VFS_BROWSER_CHANNEL", "chrome"),
         browser_executable_path=os.getenv("VFS_BROWSER_EXECUTABLE_PATH"),
         browser_headless=_as_bool(os.getenv("VFS_BROWSER_HEADLESS"), default=True),

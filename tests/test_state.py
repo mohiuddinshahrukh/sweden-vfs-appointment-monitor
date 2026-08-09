@@ -14,7 +14,7 @@ def make_result(
         status=status,
         location="Islamabad",
         category="Visit Family/Friends",
-        subcategory="Family Visit",
+        subcategory="Tourist Visit",
         available_dates=dates or [],
         available_times=[],
         signals=[],
@@ -42,14 +42,14 @@ def test_same_available_state_with_new_dates_triggers_notification() -> None:
     assert decision.event_type == "availability_changed"
 
 
-def test_three_consecutive_errors_trigger_technical_alert() -> None:
+def test_first_error_triggers_technical_alert() -> None:
     previous = MonitorState(
-        status="error",
-        fingerprint="old",
+        status="unavailable",
+        fingerprint="old-ok",
         last_change=None,
         last_success=None,
         last_alert_fingerprint="",
-        consecutive_errors=2,
+        consecutive_errors=0,
     )
     decision = decide_transition(
         previous,
@@ -66,7 +66,7 @@ def test_recovery_after_errors_sends_recovery() -> None:
         last_change=None,
         last_success=None,
         last_alert_fingerprint="",
-        consecutive_errors=3,
+        consecutive_errors=1,
     )
     decision = decide_transition(
         previous,

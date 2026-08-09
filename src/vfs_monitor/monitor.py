@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from vfs_monitor.browser import detect_with_playwright
+from vfs_monitor.browser import detect_with_attached_browser, detect_with_playwright
 from vfs_monitor.config import Settings
 from vfs_monitor.detector import detect_from_http
 from vfs_monitor.http_client import fetch_booking_page
@@ -34,6 +34,18 @@ class MonitorRunResult:
 
 def perform_check(settings: Settings) -> DetectionResult:
     checked_at = utc_now_iso()
+    if settings.check_method == "attach":
+        return detect_with_attached_browser(
+            booking_url=settings.booking_url,
+            location=settings.location,
+            category=settings.category,
+            subcategory=settings.subcategory,
+            checked_at=checked_at,
+            browser_attach_url=settings.browser_attach_url,
+            browser_timeout_ms=settings.browser_timeout_ms,
+            vfs_email=settings.vfs_email,
+            vfs_password=settings.vfs_password,
+        )
     if settings.check_method == "browser":
         return detect_with_playwright(
             booking_url=settings.booking_url,
@@ -42,6 +54,7 @@ def perform_check(settings: Settings) -> DetectionResult:
             subcategory=settings.subcategory,
             checked_at=checked_at,
             browser_user_data_dir=settings.browser_user_data_dir,
+            browser_profile_directory=settings.browser_profile_directory,
             browser_channel=settings.browser_channel,
             browser_executable_path=settings.browser_executable_path,
             browser_headless=settings.browser_headless,
@@ -64,6 +77,7 @@ def perform_check(settings: Settings) -> DetectionResult:
             subcategory=settings.subcategory,
             checked_at=checked_at,
             browser_user_data_dir=settings.browser_user_data_dir,
+            browser_profile_directory=settings.browser_profile_directory,
             browser_channel=settings.browser_channel,
             browser_executable_path=settings.browser_executable_path,
             browser_headless=settings.browser_headless,

@@ -56,7 +56,7 @@ That indicates the platform uses client-side rendering for at least part of the 
 - exact appointment category label:
   `Default_Sweden_Pakistan`
 - exact appointment sub-category label:
-  `Family Visit`
+  `Tourist Visit`
 - exact unavailable message:
   `We are sorry but no appointment slots are currently available. New slots open at regular intervals, please try again later`
 

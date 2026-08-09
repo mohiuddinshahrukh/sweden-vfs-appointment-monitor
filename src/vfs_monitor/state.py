@@ -57,24 +57,17 @@ def build_alert_fingerprint(result: DetectionResult, event_type: str) -> str:
 
 def decide_transition(previous: MonitorState, result: DetectionResult) -> TransitionDecision:
     if result.status is AppointmentStatus.ERROR:
-        next_error_count = previous.consecutive_errors + 1
-        if next_error_count >= 3:
-            return TransitionDecision(
-                send_notification=True,
-                event_type="technical_error",
-                reason="three consecutive errors",
-            )
         return TransitionDecision(
-            send_notification=False,
-            event_type="error",
-            reason="temporary error below alert threshold",
+            send_notification=True,
+            event_type="technical_error",
+            reason="technical error detected",
         )
 
-    if previous.consecutive_errors >= 3:
+    if previous.consecutive_errors >= 1:
         return TransitionDecision(
             send_notification=True,
             event_type="recovery",
-            reason="monitor recovered after repeated errors",
+            reason="monitor recovered after error",
             recovery=True,
         )
 

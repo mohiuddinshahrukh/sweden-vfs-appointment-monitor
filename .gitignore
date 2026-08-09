@@ -11,6 +11,7 @@ build/
 .env
 playwright-report/
 browser-profile/
+monitor-chrome-user-data/
 state/status.json
 state/heartbeat.txt
 logs/

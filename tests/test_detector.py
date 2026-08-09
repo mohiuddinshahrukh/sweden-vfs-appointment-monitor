@@ -21,7 +21,7 @@ def detect(name: str, *, status_code: int = 200, content_type: str = "text/html"
         ),
         location="Islamabad",
         category="Visit Family/Friends",
-        subcategory="Family Visit",
+        subcategory="Tourist Visit",
         checked_at="2026-08-08T17:00:00Z",
         source_url="https://example.test",
     )
@@ -50,7 +50,7 @@ def test_exact_unavailable_message_is_unavailable() -> None:
         method="Playwright persistent browser",
         location="Sweden Visa Application Centre - Islamabad",
         category="Default_Sweden_Pakistan",
-        subcategory="Family Visit",
+        subcategory="Tourist Visit",
         checked_at="2026-08-09T10:00:00Z",
         source_url="https://example.test",
     )
@@ -63,7 +63,7 @@ def test_otp_text_is_auth_required() -> None:
         method="Playwright persistent browser",
         location="Sweden Visa Application Centre - Islamabad",
         category="Default_Sweden_Pakistan",
-        subcategory="Family Visit",
+        subcategory="Tourist Visit",
         checked_at="2026-08-09T10:00:00Z",
         source_url="https://example.test",
         current_url="https://visa.vfsglobal.com/login",

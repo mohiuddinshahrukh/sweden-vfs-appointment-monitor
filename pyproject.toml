@@ -7,7 +7,7 @@ name = "sweden-vfs-appointment-monitor"
 version = "0.1.0"
 description = "Python monitor for Sweden Schengen visa appointment availability through VFS Global Pakistan, with Telegram and email alerts."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 license = "MIT"
 authors = [
   { name = "OpenAI Codex" }
