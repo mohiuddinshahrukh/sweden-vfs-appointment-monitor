@@ -1,6 +1,6 @@
 param(
     [string]$TaskName = "SwedenVFSMonitor",
-    [int]$IntervalMinutes = 5,
+    [int]$IntervalMinutes = 15,
     [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 )
 
